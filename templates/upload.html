@@ -1,0 +1,67 @@
+<!-- this feels so wrong, sorry future me -->
+<style>
+form {
+    padding: 1em;
+    border: 1px solid #555;
+    border-radius: 10px;
+    height: 17em;
+    margin-bottom: 2.4em;
+}
+.txt {
+    display:block;
+    width: 100%;
+    height: 2.8em;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+    padding: 0.5em;
+    
+}
+
+input {
+    margin-bottom: 0.5em;
+    display: block;
+}
+
+.content {
+    width: 22em ;
+}
+
+ul {
+    text-decoration: none;
+}
+
+#btn {
+    border-radius: 5px;
+    width: 100%;
+    padding: 1em;
+    margin-top: 2.5em;
+    color: #ffffff;
+    background: #0f67ba;
+    transition: background 0.3s;
+}
+
+#btn:hover {
+    background: #0091ea;
+    transition: background 0.3s;
+}
+
+</style>
+{% extends "foundation.html" %}
+{% block content %}
+<h1 id="title">Upload your TUMeme</h1>
+<p>make memes, not war </p> 
+<form  enctype="multipart/form-data" method="POST">
+
+    <input type="text" name="title" class="txt" placeholder="title">
+    <input type="text" name="memetype" class="txt" placeholder="type of your meme (e.g Räcke, Bode)">
+
+   <!-- I should really use flexbox but too depressed-->
+    <input type="file" name="picture" id="upload"  style="margin-bottom: 1.1em;">    
+
+    <img src={{captcha_url}} style="display:inline; padding:0; margin: 0; float: left">
+    <input type="hidden" name="kackcha-name" value={{captcha_url}}>
+    <input type="text" name="kackcha" class="txt" style="font-size: 0.7em; width: 22%; text-align:center; display:inline-block; float:left;margin-bottom: 1.5em;" placeholder="solution">
+ 
+    <input type="submit" id="btn" value="get räckt!">
+</form>
+{% endblock %}

@@ -1,0 +1,7 @@
+#!/bin/sh
+## fixed by the health scripts, for questions mail hallo@uberspace.de
+. ~/etc/phpversion
+export PHPRC="/home/tumeme/etc"
+export USER="tumeme"
+export HOME="/home/tumeme"
+exec /package/host/localhost/php-${PHPVERSION}/bin/php-cgi

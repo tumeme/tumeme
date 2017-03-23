@@ -1,0 +1,111 @@
+{% extends "foundation.html" %}
+
+{% block content %}
+<a href="/upload" id="new-meme"> 
+    <span>+</span> upload new meme   
+ </a> 
+
+ <style>
+button {
+    width: 49.4%; /* pray */ 
+    padding: 1em;
+    
+    border-radius: 4px;
+    border: 1px solid #555;
+    color: #555;
+    background: #ffffff;
+    cursor: pointer;
+
+}
+
+.voted {
+    border: 2px solid #0f71ba;
+}
+
+footer {
+    width: 100%;
+    margin-bottom: 2em;
+    border-radius: 5px;
+    /*border: 1px solid #555;*/
+}
+footer a {
+    color: #555;
+    text-decoration: None;
+    padding: 0.5em 1em 0.5em 1em;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
+
+</style>
+{% for c in content%}
+<article class="post">
+    <h1 style="text-align: left;word-wrap: break-word;">{{c[0]}}</h1>
+    <img src="img/{{c[2]}}" style="width: 100%;border-radius: 4px;max-height: 199vh;"></img>
+    {% if c[7] and (c[7][0] == 1) %}
+        <button class="voted" name="upvote" onclick="vote(this, 'vote=up&post={{c[2]}}')">me likey! ({{c[4]}})</button>
+    {% elif not error %}
+        <button name="upvote" onclick="vote(this, 'vote=up&post={{c[2]}}')">me likey! ({{c[4]}})</button>
+    {% endif %}
+
+    {% if c[7] and (c[7][1] == 1) %}
+        <button class="voted" name="downvote" onclick="vote(this, 'vote=down&post={{c[2]}}')">shhhh! ({{c[5]}})</button>
+    {% elif not error %}
+        <button name="downvote" onclick="vote(this, 'vote=down&post={{c[2]}}')">shhhh! ({{c[5]}})</button>
+    {% endif %}
+</article>
+{% endfor %}
+<footer>
+    {% if max_page == 0 %}
+    <a style="opacity: 0.5;">prev</a> <a style="opacity: 0.5;">next</a>
+    {% elif current_page == 0 %}
+    <a style="opacity: 0.5;">prev</a> <a href="?page={{current_page + 1}}">next</a>
+    {% elif current_page == max_page %}
+    <a href="?page={{current_page - 1}}">prev</a> <a style="opacity: 0.5;">next</a>
+    {% else %}
+    <a href="?page={{current_page - 1}}">prev</a> <a href="?page={{current_page + 1}}">next</a>
+    {% endif %}
+   
+</footer>
+<script>
+function vote(btn, params) {
+    /* first the style stuff */
+    if (btn.className == "voted") {
+        return;
+    } else {
+        // disable the already-voted-indication of the other btn
+        var voted = [];
+        var article = btn.parentNode.children
+        for (var i = 0; i < article.length; ++i) {
+           if (article[i].className ="voted" ) voted.push(article[i]);
+        }
+        console.log(voted);
+
+        for (var i = 0; i < voted.length; ++i ) {
+            voted[i].className = "";
+        }
+        // turn on already-voted-indication of clicked btn
+        btn.className = "voted";
+    }
+    
+    // would be smarter to only submit when user goes to next page or something to avoid unneccessary load on the server (dedidaded wam)
+    var req = new XMLHttpRequest();
+
+    // update vote count
+    req.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            var votes = this.responseText.split(" ");
+            var article = btn.parentNode.children;
+            for (var i = 0; i < article.length; ++i) {
+                if (article[i].name == "upvote") article[i].innerHTML = "me likey! (" + votes[0] + ")";  // fix me, I‘m ugly
+                else if (article[i].name == "downvote") article[i].innerHTML= "shhhhh! (" + votes[1] + ")"; // me too, thanks
+            }
+        }
+    }
+    req.open("POST", "/vote");
+    req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    req.send(params);
+
+}
+</script>
+{% endblock %}
