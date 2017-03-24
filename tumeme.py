@@ -138,7 +138,7 @@ class Tumeme(object):
             Database.apply_query(config.DB_PATH, "INSERT INTO queue VALUES(?, ?, ?, ?, ?, ?, ?)", payload=metadata)
             
             # the user uploaded his image, back to the frontpage (we want the ones with the highest rank to be showed first)
-            dankest_memes = Database.read(config.DB_PATH, "SELECT * FROM " + config.IMG_TABLE_NAME + " ORDER BY rank DESC", fetch_number=10)
+            dankest_memes = Database.read(config.DB_PATH, "SELECT * FROM " + config.IMG_TABLE_NAME + " ORDER BY rank DESC", fetch_number=config.IMG_PER_PAGE)
             return redirect("/?success")
 
          
